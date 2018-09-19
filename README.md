@@ -1,3 +1,5 @@
+* One-liner for binary: `curl -L https://github.com/saxumVermes/shop-server/releases/download/v1.0.0-alpha/shoe-server_$(uname)_$(uname -m).tar.gz -o shoe-server.tar.gz` then extract
+* For even shorter: `tar -xzf $(curl -L https://github.com/saxumVermes/shop-server/releases/download/v1.0.0-alpha/shoe-server_$(uname)_$(uname -m).tar.gz -o shoe-server.tar.gz && echo shoe-server.tar.gz)`
 * Run `export DB_URL="mysql://user:mysql@tcp(localhost:[MYSQL_PORT])/shop?charset=utf8&parseTime=True&loc=Local"`
 * Docker mysql: run `./mysql.sh <port>`
 
