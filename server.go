@@ -34,6 +34,10 @@ func port() string {
 
 func parseDBCred() (dialect string, uri string) {
 	parts := strings.Split(strings.TrimSpace(os.Getenv("DB_URL")), "://")
+	if len(parts) != 2 {
+		fmt.Fprintln(os.Stderr, "invalid db uri, check README.md or set SHOE_TEST_ENV to true for in memory storage")
+		os.Exit(1)
+	}
 	dialect = parts[0]
 	uri = parts[1]
 	if match, err := regexp.MatchString("^(sqlite3|postgres|mysql)$", dialect); !match || err != nil {

@@ -107,7 +107,7 @@ func defaultHandler(c *gin.Context) {
 }
 
 func versionHandler(c *gin.Context) {
-	c.JSON(200, gin.H{"version": fmt.Sprintf("%s_%s", VERSION, GITCOMMIT)})
+	c.JSON(200, gin.H{"version": fmt.Sprintf("%s-alpha+%s", VERSION, GITCOMMIT)})
 }
 
 func NewHandler(ss shop.ShoeServer, r *gin.Engine) {
