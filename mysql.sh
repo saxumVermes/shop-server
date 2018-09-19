@@ -1,5 +1,4 @@
 #!/bin/bash
-source ~/.zshrc
 if [[ -z $1 ]]; then
   echo 'Specify a port number'
   exit 1
