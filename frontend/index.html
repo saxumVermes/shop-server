@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Deichmann</title>
+  </head>
+  <body onload="listShoes()">
+    <style>
+      label {
+        display: block;
+        padding-top: 5px;
+      }
+      button {
+        display: block;
+        margin-top: 5px;
+      }
+      section {
+        display: inline-block;
+      }
+      aside {
+        display: inline-block;
+      }
+      #main {
+        margin: auto;
+        margin-top: 15px;
+        width: 600px;
+        background-color: #ace9e7;
+        padding: 10px;
+        border-radius: 3px;
+        box-shadow: 3px 3px 7px rgba(0,0,0,0.5);
+      }
+      article {
+        display: flex;
+        justify-content: space-around;
+        padding-bottom: 10px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+    </style>
+    <div id="main">
+      <div>
+        <h1>Deichmann</h1>
+        <hr/>
+        <div>
+      <article>
+    <section>
+      <h3>Add new shoe to the shop</h3>
+    <form name="add-shoe" id="add-shoe" method="POST">
+      <label for="brand">Brand</label>
+      <input type="text" name="brand" id="brand" required>
+      <label for="model">Model</label>
+      <input type="text" name="model" id="model" required>
+      <label for="price">Price</label>
+      <input type="text" name="price" id="price">
+      <label for="colors[]">Colors</label>
+      <input type="text" name="colors[]" id="colors[]">
+      <!-- <input type="file" name="upload" id="upload" value="Upload a file"> -->
+      <button type="submit" onclick="submitEvent()">Add</button>
+    </form>
+  </section>
+    <aside>
+        <h3>List of shoes</h3>
+        <div id="list-shoes">
+        </div>
+    </aside>
+  </article>
+  </div>
+  </body>
+  <script src="main.js"></script>
+</html>
