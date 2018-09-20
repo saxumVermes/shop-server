@@ -127,6 +127,7 @@ func NewHandler(ss shop.ShoeServer, r *gin.Engine) {
 
 func main() {
 	r := gin.Default()
+	parseDBCred()
 	ss := shop.New("Deichmann", "Budapest", 1188)
 	NewHandler(ss, r)
 	// Defaults to 8080
