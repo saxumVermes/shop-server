@@ -56,8 +56,8 @@ function submitEvent() {
   client.post(apiUrl + '/shoes', json, function (resp) {
     console.log(resp.toString())
   });
-  listShoes();
   form.reset();
+  form.submit();
 }
 
 function listShoes() {
@@ -81,7 +81,6 @@ function listShoes() {
 }
 
 document.addEventListener('click', function(e) {
-  var s = new XMLSerializer();
   var target = e.target;
   if (target.getAttribute('name') === 'delete') {
     deleteShoe(target.getAttribute('id'));
