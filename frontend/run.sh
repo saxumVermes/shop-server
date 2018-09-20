@@ -5,7 +5,7 @@ setup() {
     exit
   fi
   docker build -t shop-frontend . && \
-  docker run -d -p $1:80 --name shop-frontend shop-frontend
+  docker run -d -p $1:80 --name shop-frontend -v $PWD:/usr/share/nginx/html shop-frontend
   if [[ ! $? = 0 ]]; then
     exit
   fi

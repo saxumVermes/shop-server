@@ -14,7 +14,7 @@ var HttpClient = function() {
   };
 
   this.post = function (url, data, callback) {
-    var request = new XMLHttpRequest();
+    var request = new XMLHttpRequest({mozSystem: true});
     request.onreadystatechange = function () {
       if (request.readyState === 4 && request.status === 200)
         callback(request.responseText);
@@ -43,13 +43,28 @@ var client = new HttpClient();
 function submitEvent() {
   var form = document.getElementById('add-shoe');
   var data = new FormData(form);
-  client.post(apiUrl + '/shoes', data, function (resp) {
+  var object = {};
+  data.forEach(function(value, key){
+    object[key] = value;
+  });
+  for (field in object) {
+    if (document.getElementById(field).type === 'number') {
+      object[field] = parseFloat(object[field]);
+    }
+  }
+  var json = JSON.stringify(object);
+  client.post(apiUrl + '/shoes', json, function (resp) {
     console.log(resp.toString())
-  })
+  });
+  listShoes();
+  form.reset();
 }
 
 function listShoes() {
   var shoes = document.getElementById("list-shoes");
+  while (shoes.hasChildNodes()) {
+    shoes.removeChild(shoes.lastChild);
+  }
   client.get(apiUrl+'/shoes', function (resp) {
     var unserJson = JSON.parse(resp);
     for (id in unserJson) {
