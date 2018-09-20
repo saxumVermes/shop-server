@@ -67,7 +67,7 @@ func (s ORMShoeServer) Add(brand, model string, price float32, colors string) (s
 func (s ORMShoeServer) List() []Shoe {
 	db, err := gorm.Open(Dialect, DBUri)
 	if err != nil {
-		panic("failed to connect to database")
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
 	}
 	defer func() {
 		err = db.Close()
@@ -86,7 +86,7 @@ func (s ORMShoeServer) List() []Shoe {
 func (s ORMShoeServer) DeleteById(id string) (success bool) {
 	db, err := gorm.Open(Dialect, DBUri)
 	if err != nil {
-		panic("failed to connect to database")
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
 	}
 	defer func() {
 		err = db.Close()
@@ -94,19 +94,19 @@ func (s ORMShoeServer) DeleteById(id string) (success bool) {
 			fmt.Errorf("deletion: can not close database: %v", err)
 		}
 	}()
-
 	shoe := Shoe{}
-	if db.Find(&shoe).Where("s_id = ?", id).Delete(&shoe).Error != nil {
+	if db.Where("s_id = ?", id).First(&shoe).Error != nil {
 		fmt.Println(shoe)
 		return false
 	}
+	db.Delete(&shoe)
 	return true
 }
 
 func (s ORMShoeServer) Find(id string) (Shoe, bool) {
 	db, err := gorm.Open(Dialect, DBUri)
 	if err != nil {
-		panic("failed to connect to database")
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
 	}
 	defer func() {
 		err = db.Close()
