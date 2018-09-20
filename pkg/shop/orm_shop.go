@@ -32,7 +32,7 @@ func newORM(name string, city string, zip int) ORMShoeServer {
 func (s ORMShoeServer) Add(brand, model string, price float32, colors string) (shoe Shoe, ok bool) {
 	db, err := gorm.Open(Dialect, DBUri)
 	if err != nil {
-		panic("failed to connect to database")
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
 	}
 	defer func() {
 		err = db.Close()

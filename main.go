@@ -14,14 +14,15 @@ package main
 // ENV:
 // 	SHOE_SERVER_PORT=8080
 // 	DB_URL=sqlite3://test.db
-//  SHOE_TEST_ENV=true  -> sets storage to in memory
+//  SHOE_TEST_ENV=true  -> sets storage to in-memory
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/saxumVermes/shop_orm_inmem/pkg/shop"
+	"github.com/saxumVermes/shop-server/pkg/shop"
 )
 
 const VERSION = "1.0.0"
@@ -31,22 +32,23 @@ var GITCOMMIT = "???"
 func addHandler(ss shop.ShoeServer) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var sf shoeForm
-		if c.ShouldBind(&sf) == nil {
-			if sf.Brand != "" && sf.Model != "" {
-				shoe, ok := ss.Add(sf.Brand, sf.Model, sf.Price, sf.Colors)
-				if !ok {
-					c.JSON(409, gin.H{"warning": "product already exists with that id"})
-					return
-				}
-				c.IndentedJSON(201, gin.H{
-					shoe.SID: shoe,
-				})
-			} else {
-				c.JSON(200, gin.H{"status": "Required fields are empty"})
+		if err := c.ShouldBindJSON(&sf); err != nil && err != io.EOF {
+			fmt.Println(sf)
+			c.JSON(400, gin.H{"status": "error occured while adding shoe"})
+			fmt.Fprintf(os.Stdout, "error occured while adding shoe: %v\n", err)
+			return
+		}
+		if sf.Brand != "" && sf.Model != "" {
+			shoe, ok := ss.Add(sf.Brand, sf.Model, sf.Price, sf.Colors)
+			if !ok {
+				c.JSON(409, gin.H{"warning": "product already exists with that id"})
+				return
 			}
+			c.IndentedJSON(201, gin.H{
+				shoe.SID: shoe,
+			})
 		} else {
-			c.JSON(500, gin.H{"status": "Error occured while adding shoe"})
-			fmt.Fprintln(os.Stdout, "Error occured while adding shoe")
+			c.JSON(200, gin.H{"status": "Required fields are empty"})
 		}
 	}
 }
@@ -111,16 +113,16 @@ func versionHandler(c *gin.Context) {
 }
 
 func NewHandler(ss shop.ShoeServer, r *gin.Engine) {
-	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
-		"admin": "admin",
-	}))
+	// authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
+	// 	"admin": "admin",
+	// }))
 	r.OPTIONS("/*path", defaultHandler)
 	r.POST("/shoes", addHandler(ss))
 	r.GET("/shoes", listHandler(ss))
 	r.GET("/shoes/:id", shoePageHandler(ss))
-	authorized.DELETE("/shoes/:id", deleteHandler(ss))
+	r.DELETE("/shoes/:id", deleteHandler(ss))
 	r.GET("/version", versionHandler)
-	authorized.GET("/", defaultHandler)
+	r.GET("/", defaultHandler)
 }
 
 func main() {

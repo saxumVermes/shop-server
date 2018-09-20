@@ -6,18 +6,14 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/saxumVermes/shop_orm_inmem/pkg/shop"
+	"github.com/saxumVermes/shop-server/pkg/shop"
 )
 
 type shoeForm struct {
-	Brand  string  `form:"brand"`
-	Model  string  `form:"model"`
-	Price  float32 `form:"price"`
-	Colors string  `form:"colors[]"`
-}
-
-func init() {
-	shop.Dialect, shop.DBUri = parseDBCred()
+	Brand  string  `form:"brand" json:"brand"`
+	Model  string  `form:"model" json:"model"`
+	Price  float32 `form:"price" json:"price"`
+	Colors string  `form:"colors[]" json:"colors[]"`
 }
 
 func port() string {
@@ -32,17 +28,17 @@ func port() string {
 	return ":8080"
 }
 
-func parseDBCred() (dialect string, uri string) {
+func parseDBCred() {
 	parts := strings.Split(strings.TrimSpace(os.Getenv("DB_URL")), "://")
 	if len(parts) != 2 {
 		fmt.Fprintln(os.Stderr, "invalid db uri, check README.md or set SHOE_TEST_ENV to true for in memory storage")
 		os.Exit(1)
 	}
-	dialect = parts[0]
-	uri = parts[1]
+	dialect := parts[0]
+	uri := parts[1]
 	if match, err := regexp.MatchString("^(sqlite3|postgres|mysql)$", dialect); !match || err != nil {
-		panic("connection failed! might be wrong input dialect")
+		panic(fmt.Sprintf("connection failed! might be wrong input dialect: %v", err))
 	}
 
-	return dialect, uri
+	shop.Dialect, shop.DBUri = dialect, uri
 }

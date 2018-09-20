@@ -15,12 +15,12 @@ type InMemShoeServer struct {
 	sync.RWMutex
 }
 
-var counter int
+var counter = 1
 
 func (s *InMemShoeServer) Add(brand, model string, price float32, colors string) (Shoe, bool) {
 	s.Lock()
 	defer s.Unlock()
-	id := fmt.Sprintf("%3.3s-%03d", strings.ToLower(strings.TrimSpace(brand)), counter+1)
+	id := fmt.Sprintf("%3.3s-%03d", strings.ToLower(strings.TrimSpace(brand)), counter)
 	if _, ok := s.Products[id]; ok {
 		logrus.Warnf("Product already exists with id %s", id)
 		return Shoe{}, false
@@ -33,6 +33,7 @@ func (s *InMemShoeServer) Add(brand, model string, price float32, colors string)
 		Colors: colors,
 	}
 	s.Products[id] = shoe
+	counter++
 	return shoe, true
 }
 
